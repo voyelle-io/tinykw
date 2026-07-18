@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tinykw"
+version = "1.0.5"
+description = "Python binding for TinyKW"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+license-files = ["LICENSE"]
+keywords = ["keyword spotting", "wake word"]
+
+[project.urls]
+Homepage = "https://voyelle.io/tinykw"
+Repository = "https://github.com/voyelle-io/tinykw.git"
+
+[project.optional-dependencies]
+dev   = ["numpy", "scipy", "pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+tinykw = ["libs/*/*.so", "libs/*/*.dll", "libs/*/*.dylib"]

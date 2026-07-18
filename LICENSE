@@ -1,0 +1,28 @@
+Copyright (c) 2026 TinyKW, Voyelle.io
+
+Permission is hereby granted, free of charge, to any person or organization
+obtaining a copy of this software and associated documentation files
+(the "Software") to use, reproduce, and distribute the Software in binary form
+for non-commercial purposes only, including internal evaluation,
+research, prototyping, and educational use, provided that this license notice is 
+retained in all copies or distributions.
+
+Commercial use of the Software is prohibited without a separate written
+commercial license from the copyright holder. For purposes of this license, 
+"commercial use" means use of the Software in or for a product, service, or 
+activity that generates revenue or other commercial benefit, including use 
+in products or services that are sold, licensed, hosted, subscription-based, 
+or monetized in any form.
+
+You may not:
+- reverse engineer, decompile, or disassemble the Software except where
+  such restriction is prohibited by applicable law;
+- remove or alter copyright or license notices.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING
+FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
