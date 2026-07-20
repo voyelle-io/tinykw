@@ -4,7 +4,7 @@
 
 TinyKW ("Tiny Keyword") is a lightweight, configurable, keyword spotting engine. 
 
-It can be used as a Wake word, or for simple Voice commands interactions, on cortex-M MCUs, Raspberry Pi and desktops.
+It can be used for Wake word detection and simple Voice commands, on cortex-M MCUs, Raspberry Pi and desktops.
 
 ## Installation
 
