@@ -1,4 +1,4 @@
-Python binding for TinyKW.
+# Python binding for TinyKW
 
 ## Installation
 
