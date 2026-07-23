@@ -2,21 +2,23 @@ Python binding for TinyKW.
 
 ## Installation
 
-`pip install tinykw`
+```
+pip install tinykw
+```
 
 ## Usage
 
 ```python
-import tinykw
+from tinykw import TkwEngine
 
-tinykw.tkw_init()
+engine = TkwEngine(language="es")
 
-kw_id = tinykw.tkw_add_keyword(keyword_bytes, detection_threshold)
+kw_id = engine.add_keyword(data=kw_bytes, detection_threshold=0.5)
 # ... 
-tinykw.tkw_process_frame(samples)
+engine.process_frame(samples)
 # ...
-if tinykw.tkw_is_keyword_detected(kw_id):
-    tinykw.tkw_clear_keyword_flag(kw_id)
+if engine.is_keyword_detected(kw_id):
+    engine.clear_keyword_flag(kw_id)
 ```
 
 See [examples/python](https://github.com/voyelle-io/tinykw/tree/main/examples/python) for full usage.
