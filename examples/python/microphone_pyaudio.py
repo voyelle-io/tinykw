@@ -30,7 +30,7 @@ def main():
     # 3. Read and process microphone's data using Pyaudio.
     p = pyaudio.PyAudio()
     try:
-        stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=tkw_engine.frame_size)
+        stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=engine.frame_size)
         print('Recording...')
         while True:
             data = stream.read(engine.frame_size)
