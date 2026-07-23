@@ -2,7 +2,7 @@ from pathlib import Path
 import numpy as np
 from scipy.io import wavfile
 import pytest
-import tinykw
+from tinykw import TkwEngine
 
 testdata = [
     ("en", "en-hello_world.wav",     [0x11, 0xb4, 0x15, 0xc0, 0x54, 0xb6, 0xcc, 0x22, 0xc5, 0xb6, 0xd6, 0x2e, 0x7a, 0xe3, 0xb9, 0x75, 0xf6, 0xb6, 0xbc, 0x70, 0xf7, 0x29, 0x3b, 0x14, 0x67, 0x9a, 0x81, 0x07, 0x93, 0x51, 0xa2, 0x90, 0x40, 0x74, 0xc9, 0x06, 0xb6, 0x41, 0x6a, 0xf5, 0x2a, 0xe2, 0x7c, 0x39, 0xfa, 0x9e, 0x5a, 0x92]),
@@ -17,9 +17,9 @@ testdata = [
 
 @pytest.mark.parametrize("lang,wav_file,keyword_bytes", testdata)
 def test_tinykw(lang: str, wav_file: str, keyword_bytes: list):
-    tinykw.tkw_init(lang)
+    engine = TkwEngine(language=lang)
 
-    kw_id = tinykw.tkw_add_keyword(keyword_bytes, 0.5)
+    kw_id = engine.add_keyword(keyword_bytes, 0.5)
     assert(isinstance(kw_id, int))
     assert(kw_id >= 0)
 
@@ -28,11 +28,11 @@ def test_tinykw(lang: str, wav_file: str, keyword_bytes: list):
     assert(sample_rate == 16000)
     assert(data.dtype == np.int16)
 
-    timesteps = data.shape[0] // tinykw.AUDIO_FRAME_SIZE
+    timesteps = data.shape[0] // engine.frame_size
     detections = np.zeros(timesteps, dtype=np.int32)
     for t in range(timesteps):
-        tinykw.tkw_process_frame(data[t*tinykw.AUDIO_FRAME_SIZE: (t+1)*tinykw.AUDIO_FRAME_SIZE])
-        if tinykw.tkw_is_keyword_detected(kw_id):
+        engine.process_frame(data[t * engine.frame_size: (t+1) * engine.frame_size])
+        if engine.is_keyword_detected(kw_id):
             detections[t] = 1
-            tinykw.tkw_clear_keyword_flag(kw_id)
+            engine.clear_keyword_flag(kw_id)
     assert(np.sum(detections) == 1)

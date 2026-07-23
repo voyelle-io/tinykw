@@ -8,7 +8,6 @@
  * 
  * For commercial licensing, contact: https://www.voyelle.io
  *
- * Version: 1.0
  */
 
 
@@ -21,6 +20,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdalign.h>
 
 #if defined(_WIN32)
   #ifdef TKW_BUILD
@@ -28,7 +28,7 @@
   #else
     #define TKW_API __declspec(dllimport)
   #endif
-#elif defined(__arm__) || defined(__thumb__)
+#elif !defined(__linux__) && !defined(__APPLE__) && (defined(__arm__) || defined(__thumb__))
   #define TKW_API
 #else
   #define TKW_API __attribute__((visibility("default")))
@@ -36,8 +36,9 @@
 
 #define TKW_VERSION_MAJOR 1
 #define TKW_VERSION_MINOR 0
-#define TKW_VERSION_PATCH 0
+#define TKW_VERSION_PATCH 7
 
+#define TKW_CTX_SIZE (9000)
 #define TKW_AUDIO_FRAME_SIZE (480)
 
 typedef enum {
@@ -53,12 +54,32 @@ typedef enum {
 
 
 /*
- * Initialize the TKW engine.
- * This should be called before any other API function.
+ * `tkw_context` holds the memory required for internal state.
+ */
+typedef struct {
+    alignas(8) uint8_t internal_memory[TKW_CTX_SIZE]; 
+} tkw_context;
+
+/*
+ * Initializes a `tkw_context` provided by caller.
  * Calling tkw_init() multiple times is allowed and resets all internal state,
  * including registered keywords and detection flags.
+ * `ctx` must not be NULL.
  */
-TKW_API tkw_status tkw_init(void);
+TKW_API tkw_status tkw_init(tkw_context* ctx);
+
+/*
+ * Similar to tkw_init(), but creates `tkw_context` 
+ * on the heap and initializes it. 
+ * This should be used in conjunction with `tkw_destroy()`.
+ */
+TKW_API tkw_context* tkw_create(void);
+
+/*
+ * Free the memory of a `tkw_context` previously
+ * allocated on the heap by `tkw_create()`.
+ */
+TKW_API void tkw_destroy(tkw_context* ctx);
 
 /* 
  * Adds a keyword to be detected.
@@ -72,7 +93,7 @@ TKW_API tkw_status tkw_init(void);
  *        then eventually adjust based on your tolerance for false positives vs missed detections.
  *  - out_id: receives the assigned keyword ID
  */
-TKW_API tkw_status tkw_add_keyword(const uint8_t data[48], uint8_t detection_threshold, uint32_t* out_id);
+TKW_API tkw_status tkw_add_keyword(const uint8_t data[48], uint8_t detection_threshold, uint32_t* out_id, tkw_context* ctx);
 
 /*
  * Processes one frame of 16-bit PCM audio sampled at 16 kHz.
@@ -81,7 +102,7 @@ TKW_API tkw_status tkw_add_keyword(const uint8_t data[48], uint8_t detection_thr
  *  - waveform: pointer to audio samples
  *  - size: number of samples in waveform, must equal TKW_AUDIO_FRAME_SIZE
  */
-TKW_API tkw_status tkw_process_frame(const int16_t* waveform, size_t size);
+TKW_API tkw_status tkw_process_frame(const int16_t* waveform, size_t size, tkw_context* ctx);
 
 /*
  * Reads the detection flag for a specific keyword.
@@ -92,12 +113,12 @@ TKW_API tkw_status tkw_process_frame(const int16_t* waveform, size_t size);
  *
  * Detection remains set until cleared with tkw_clear_keyword_flag().
  */
-TKW_API tkw_status tkw_is_keyword_detected(uint32_t keyword_id, uint32_t* out_detected);
+TKW_API tkw_status tkw_is_keyword_detected(uint32_t keyword_id, uint32_t* out_detected, tkw_context* ctx);
 
 /*
  * Clears the detection flag for a specific keyword.
  */
-TKW_API tkw_status tkw_clear_keyword_flag(uint32_t keyword_id);
+TKW_API tkw_status tkw_clear_keyword_flag(uint32_t keyword_id, tkw_context* ctx);
 
 
 /*

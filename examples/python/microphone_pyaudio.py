@@ -1,7 +1,7 @@
 # This demo uses PyAudio (https://people.csail.mit.edu/hubert/pyaudio/) to read the microphone audio and TinyKW to detect keywords.
 import random
 import pyaudio
-import tinykw
+from tinykw import TkwEngine
 import numpy as np
 import termcolor
 random.seed(1)
@@ -17,27 +17,28 @@ def main():
     nb_keywords = len(keywords)
     colors = random.sample(list(termcolor.COLORS.keys()), len(keywords))
 
-    # 1. Initialization of the engine (always required at startup).
-    tinykw.tkw_init("en")
+    # 1. Initialization of the engine.
+    engine = TkwEngine(language="en")
 
     # 2. Add the keywords to the engine. 
+    # add_keyword() returns a unique id associated with the keyword
     keyword_ids = []
     for k in range(nb_keywords):
-        kw_id = tinykw.tkw_add_keyword(data=keywords[k][1], detection_threshold=0.5)
+        kw_id = engine.add_keyword(data=keywords[k][1], detection_threshold=0.5)
         keyword_ids.append(kw_id)
 
     # 3. Read and process microphone's data using Pyaudio.
     p = pyaudio.PyAudio()
     try:
-        stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=tinykw.AUDIO_FRAME_SIZE)
+        stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=tkw_engine.frame_size)
         print('Recording...')
         while True:
-            data = stream.read(tinykw.AUDIO_FRAME_SIZE)
+            data = stream.read(engine.frame_size)
             samples = np.frombuffer(data, dtype=np.int16)
-            tinykw.tkw_process_frame(samples) # process one audio frame
-            for k in range(len(keywords)):
-                if tinykw.tkw_is_keyword_detected(keyword_ids[k]): # check detection
-                    tinykw.tkw_clear_keyword_flag(keyword_ids[k])  # clear detection flag
+            engine.process_frame(samples) # process one audio frame
+            for k in range(nb_keywords):
+                if engine.is_keyword_detected(keyword_ids[k]): # check detection
+                    engine.clear_keyword_flag(keyword_ids[k])  # clear detection flag
                     print(termcolor.colored(f"{keywords[k][0]}", colors[k], attrs=["bold"]), "detected")
                 
     except KeyboardInterrupt:

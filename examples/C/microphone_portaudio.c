@@ -27,8 +27,9 @@ int microphone_demo()
     signal(SIGINT, intHandler);
     tkw_status status;
 
-    /* This initializes the engine (required at startup) */
-    status = tkw_init();
+    /* Creates and Initializes TinyKW context */
+    tkw_context ctx;
+    status = tkw_init(&ctx);
     assert(status == TKW_OK);
     printf("TinyKW engine initialized.\n");
 
@@ -47,7 +48,7 @@ int microphone_demo()
     uint32_t keyword_ids[NB_KEYWORDS];
     for (int k = 0; k < NB_KEYWORDS; ++k)
     {
-        status = tkw_add_keyword(keyword_bytes[k], 128, &(keyword_ids[k]));
+        status = tkw_add_keyword(keyword_bytes[k], 128, &(keyword_ids[k]), &ctx);
         assert(status == TKW_OK);
     }
     printf("Keywords added.\n");
@@ -91,16 +92,16 @@ int microphone_demo()
     {
         err = Pa_ReadStream( stream, sampleBlock, TKW_AUDIO_FRAME_SIZE );
         if( err ) goto xrun;
-            status = tkw_process_frame(sampleBlock, TKW_AUDIO_FRAME_SIZE); // process one frame
+            status = tkw_process_frame(sampleBlock, TKW_AUDIO_FRAME_SIZE, &ctx); // process one frame
             assert(status == TKW_OK);
             for (int i = 0; i < NB_KEYWORDS; ++i)
             {
                 uint32_t is_detected = 0;
-                status = tkw_is_keyword_detected(keyword_ids[i], &is_detected); // check detection
+                status = tkw_is_keyword_detected(keyword_ids[i], &is_detected, &ctx); // check detection
                 assert(status == TKW_OK);
                 if (is_detected)
                 {
-                    status = tkw_clear_keyword_flag(i); // clear flag
+                    status = tkw_clear_keyword_flag(i, &ctx); // clear flag
                     assert(status == TKW_OK);
                     printf("%s detected\n", keyword_names[i]); fflush(stdout);
                 }

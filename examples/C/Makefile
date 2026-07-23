@@ -1,8 +1,12 @@
 BUILD_DIR := build
 
-TINYKW_INCLUDE_DIR := ../../include
-# Path to be modified according to platform
-TINYKW_LIB_PATH := ../../libs/macos-x86_64/en/
+# Variables to be modified according to platform
+PLATFORM := macos-x86_64
+LANGUAGE := en
+
+TINYKW_LIB_ROOT := ../../libs/$(PLATFORM)
+TINYKW_INCLUDE_DIR := $(TINYKW_LIB_ROOT)
+TINYKW_LIB_PATH := $(TINYKW_LIB_ROOT)/$(LANGUAGE)
 TINYKW_LIB_NAME := tinykw
 
 SRCS := microphone_portaudio.c
