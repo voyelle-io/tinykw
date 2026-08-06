@@ -101,7 +101,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Create Zip releases
         run: ./ci/package_libs.sh ${{ github.ref_name }}
-      - name: Upload Zip files to GitHub Release
+      - name: Create Release and Upload Zip Assets
         run: gh release create "${{ github.ref_name }}" tinykw-*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
