@@ -7,7 +7,7 @@ on:
       - "v*"
 
 jobs:
-  build:
+  build-wheels:
     strategy:
       fail-fast: false
       matrix:
@@ -73,19 +73,36 @@ jobs:
         name: wheel-${{ matrix.plat_tag }}
         path: python-binding/dist/*.whl
 
-  # this download the artifacts and push them to pypi (if the github commit is a release)
-  publish:
+  publish-pypi:
     needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download wheel files
+        uses: actions/download-artifact@v4
         with:
           pattern: wheel-*
           merge-multiple: true
           path: dist/
-      - uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Push wheels to Pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://upload.pypi.org/legacy/
+
+  publish-release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Create Zip releases
+        run: ./ci/package_assets.sh ${{ github.ref_name }}
+      - name: Upload Zip files to GitHub Release
+        run: gh release upload "${{ github.ref_name }}" tinykw-*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
