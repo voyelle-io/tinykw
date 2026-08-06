@@ -98,10 +98,9 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - name: Create Zip releases
-        run: ./ci/package_assets.sh ${{ github.ref_name }}
+        run: ./ci/package_libs.sh ${{ github.ref_name }}
       - name: Upload Zip files to GitHub Release
         run: gh release upload "${{ github.ref_name }}" tinykw-*.zip
         env:
