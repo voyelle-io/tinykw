@@ -35,7 +35,12 @@ if (is_detected)
 
 See [examples/C](examples/C/) and [examples/Python](examples/python/) for full examples.
 
+## Projects using TinyKW
+
+* [wyoming-tinykw](https://github.com/Yamawine408/wyoming-tinykw): Wake word detection for Home Assistant Wyoming Protocol.
+* [stm32f411-voice-interaction](https://github.com/voyelle-io/stm32f411-voice-interaction): Voice interaction on NUCLEO-STM32F411 board.
+
 ## License
 
-TinyKW is free for non-commercial use, including research, education, prototyping, and evaluation.
+TinyKW is free for non-commercial use, including hobby projects, research, education, prototyping, and evaluation.
 Please see [LICENSE](LICENSE) for details. For commercial enquiries, please contact [contact@voyelle.io](mailto:contact@voyelle.io).

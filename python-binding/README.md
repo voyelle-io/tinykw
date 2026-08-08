@@ -25,5 +25,5 @@ See [examples/python](https://github.com/voyelle-io/tinykw/tree/main/examples/py
 
 ## License
 
-TinyKW is free for non-commercial use, including research, education, prototyping, and evaluation.
+TinyKW is free for non-commercial use, including hobby projects, research, education, prototyping, and evaluation.
 Please see [LICENSE](https://github.com/voyelle-io/tinykw/tree/main/LICENSE) for details. For commercial enquiries, please contact [contact@voyelle.io](mailto:contact@voyelle.io).
